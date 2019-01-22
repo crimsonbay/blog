@@ -11,8 +11,6 @@ class Post(models.Model):
     text = models.TextField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def readed(self):
-
 
 # Subscriptions table, every subscription has it's own have_read posts
 class Subscriptions(models.Model):
