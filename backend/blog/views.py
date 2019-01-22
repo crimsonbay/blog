@@ -10,6 +10,7 @@ from rest_framework import status
 # Create your views here.
 
 
+# 'subscribe/author_id=' subscription on author view
 class AddSubscriptionView(APIView):
     permission_classes = (IsAuthenticated, )
 
@@ -38,6 +39,7 @@ class AddSubscriptionView(APIView):
             return Response(response_data, status.HTTP_400_BAD_REQUEST)
 
 
+# 'unsubscribe/author_id=' unsubscription on author view
 class DeleteSubscriptionView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -66,6 +68,7 @@ class DeleteSubscriptionView(APIView):
             return Response(response_data, status.HTTP_400_BAD_REQUEST)
 
 
+# 'create-post/' creates new post with authenticated user and data in body
 class CreatePostView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = CreatePostSerializer
@@ -75,6 +78,7 @@ class CreatePostView(generics.CreateAPIView):
         serializer.save(author=self.request.user)
 
 
+# 'list/' get list of posts from user subscriptions for authenticated user
 class GetMyList(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PostSerializer
@@ -86,6 +90,7 @@ class GetMyList(generics.ListAPIView):
         return posts
 
 
+# 'list/<int:user_id>/' get list of posts for specified user
 class GetUserList(generics.ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = PostSerializer
@@ -96,6 +101,8 @@ class GetUserList(generics.ListAPIView):
         return posts
 
 
+# 'mark-read/<int:post_id>' marks post as read for authenticated user
+# add relation in have_read for the appropriate subscription
 class MarkPost(APIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PostSerializer
