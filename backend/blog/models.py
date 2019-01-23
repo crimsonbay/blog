@@ -14,7 +14,14 @@ class Post(models.Model):
 
 # Subscriptions table, every subscription has it's own have_read posts
 class Subscriptions(models.Model):
-    user = models.ForeignKey(User, verbose_name='Подписчик', on_delete=models.CASCADE, related_name='subscriptions')
-    author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE, related_name='readers')
-    have_read = models.ManyToManyField(Post, verbose_name='Прочитаные посты',\
-                                       blank=True, related_name='readed')
+    user = models.ForeignKey(User, verbose_name='Подписчик',
+                             on_delete=models.CASCADE, related_name='subscriptions')
+    author = models.ForeignKey(User, verbose_name='Автор',
+                               on_delete=models.CASCADE, related_name='readers')
+
+
+class ReadPost(models.Model):
+    user = models.ForeignKey(User, verbose_name='Читатель',
+                             on_delete=models.CASCADE, related_name='readed')
+    post = models.ForeignKey(Post, verbose_name='Пост',
+                             on_delete=models.CASCADE, related_name='user_read')

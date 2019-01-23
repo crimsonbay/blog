@@ -16,14 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from blog.views import AddSubscriptionView, CreatePostView, GetMyList, GetUserList,\
-    MarkPost, DeleteSubscriptionView
+    MarkPost, DeleteSubscriptionView, GetAllMyList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('subscribe/', AddSubscriptionView.as_view()),
-    path('unsubscribe/', DeleteSubscriptionView.as_view()),
+    path('subscribe/<int:author_id>', AddSubscriptionView.as_view()),
+    path('unsubscribe/<int:author_id>', DeleteSubscriptionView.as_view()),
     path('create-post/', CreatePostView.as_view()),
     path('list/', GetMyList.as_view()),
+    path('list_all/', GetAllMyList.as_view()),
     path('list/<int:user_id>/', GetUserList.as_view()),
     path('mark-read/<int:post_id>', MarkPost.as_view()),
 ]
