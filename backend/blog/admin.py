@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Subscriptions, ReadPost
+from .models import Post, Subscription, ReadPost
 # Register your models here.
 
 
@@ -7,7 +7,7 @@ class PostAdmin(admin.ModelAdmin):
     pass
 
 
-class SubscriptionsAdmin(admin.ModelAdmin):
+class SubscriptionAdmin(admin.ModelAdmin):
     pass
 
 
@@ -16,5 +16,5 @@ class ReadPostAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(Subscriptions, SubscriptionsAdmin)
+admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(ReadPost, ReadPostAdmin)

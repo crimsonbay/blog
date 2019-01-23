@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Subscriptions, User
+from .models import Post, Subscription, User
 
 
 # little serializer for author in PostSerializer
@@ -24,3 +24,17 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'author', 'title', 'text', 'created_at')
+
+
+class UserMiniSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'username')
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    user = UserMiniSerializer()
+    class Meta:
+        model = Subscription
+        fields = ('user',)

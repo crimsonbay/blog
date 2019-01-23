@@ -1,14 +1,19 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from .models import Post, Subscriptions, User, ReadPost
-from .serializers import PostSerializer, CreatePostSerializer
+from .models import Post, Subscription, User, ReadPost
+from .serializers import PostSerializer, CreatePostSerializer, UserMiniSerializer,\
+    SubscriptionSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
+from django.http import HttpResponse
 
 # Create your views here.
+def index(request):
+    return render(request, 'index.html')
+
 
 
 # 'subscribe/<int:author_id>' subscription on author view
@@ -32,12 +37,12 @@ class AddSubscriptionView(APIView):
             return Response(response_data, status.HTTP_400_BAD_REQUEST)
         author = User.objects.get(id=author_id)
         # if subscription already exists, nothing to delete - error
-        if Subscriptions.objects.filter(user=request.user, author=author).exists():
+        if Subscription.objects.filter(user=request.user, author=author).exists():
             response_data['error'] = 'You are already subscribed on this author.'
             return Response(response_data, status.HTTP_400_BAD_REQUEST)
         # create subscription
         try:
-            subscription = Subscriptions.objects.create(author=author, user=request.user)
+            subscription = Subscription.objects.create(author=author, user=request.user)
             subscription.full_clean()
             return Response(response_data, status.HTTP_200_OK)
         except Exception as e:
@@ -66,12 +71,12 @@ class DeleteSubscriptionView(APIView):
             return Response(response_data, status.HTTP_400_BAD_REQUEST)
         author = User.objects.get(id=author_id)
         # if no subscription, nothing to delete - error
-        if not Subscriptions.objects.filter(user=request.user, author=author).exists():
+        if not Subscription.objects.filter(user=request.user, author=author).exists():
             response_data['error'] = 'You are already not subscribed on this author.'
             return Response(response_data, status.HTTP_400_BAD_REQUEST)
         # delete subscription
         try:
-            Subscriptions.objects.get(user=request.user, author=author).delete()
+            Subscription.objects.get(user=request.user, author=author).delete()
             return Response(response_data, status.HTTP_200_OK)
         except Exception as e:
             response_data['error'] = str(e)
@@ -137,7 +142,7 @@ class MarkPost(APIView):
             response_data['error'] = 'Already read.'
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         # if no subscription on this author - error
-        elif not Subscriptions.objects.filter(
+        elif not Subscription.objects.filter(
                 user=self.request.user,
                 author__posts=self.kwargs['post_id']).exists():
             response_data['error'] =\
@@ -151,3 +156,36 @@ class MarkPost(APIView):
         except Exception as e:
             response_data['error'] = str(e)
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+
+# return ALL Users WITH authenticated if user is_authenticated
+class UserView(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = UserMiniSerializer
+
+    def get_queryset(self):
+        users = User.objects.all()
+        return users
+
+
+# return all authors user have subscribed without authenticated user
+class SubscriptionView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserMiniSerializer
+
+    def get_queryset(self):
+        users = User.objects.filter(Q(readers__user_id=self.request.user) &
+                                    ~Q(id=self.request.user.id))
+        return users
+
+
+# return all authors user have NOT subscribed without authenticated user
+class NoSubscriptionView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserMiniSerializer
+
+    def get_queryset(self):
+        users = User.objects.filter(
+            ~Q(readers__user_id=self.request.user) &
+            ~Q(id=self.request.user.id))
+        return users
