@@ -1,0 +1,65 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% csrf_token %}
+  <p>Непрочитанные посты:</p>
+  <div id="main-div"></div>
+<script type="text/javascript">
+  var xhr = new XMLHttpRequest();
+  var csrftoken = getCookie('csrftoken');
+  let mainDiv = window.document.querySelector('#main-div')
+  xhr.open('GET', 'http://localhost:8000/api/list/', false)
+  xhr.send();
+  if (xhr.status != 200) {
+    // обработать ошибку
+    alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
+  } else {
+    var posts = JSON.parse(xhr.responseText).results
+    console.log(posts)
+    for (i in posts) {
+      let div = document.createElement('div')
+      let author = document.createElement('p')
+      author.innerText = 'Автор: ' + posts[i].author.username
+      let title = document.createElement('p')
+      title.innerHTML = '<b>' + posts[i].title + '</b>'
+      let text = document.createElement('span')
+      text.innerText = posts[i].text
+      let button = document.createElement('button')
+      button.setAttribute('id', posts[i].id)
+      button.innerText = 'Прочитано'
+      button.onclick = function() {
+        console.log(this)
+        xhr.open('POST', 'http://localhost:8000/api/mark-read/'+ this.id + '/', false);
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        xhr.send();
+        window.location.reload(true)
+      }
+      let lineBreak = document.createElement('p')
+      let separator = document.createElement('p')
+      separator.innerText = '----------------------------------'
+      div.appendChild(author)
+      div.appendChild(title)
+      div.appendChild(text)
+      div.appendChild(lineBreak)
+      div.appendChild(button)
+      div.appendChild(separator)
+      mainDiv.appendChild(div)
+    }
+  }
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+</script>
+{% endblock %}

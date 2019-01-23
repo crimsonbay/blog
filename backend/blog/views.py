@@ -8,12 +8,19 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 # Create your views here.
+
+
 def index(request):
     return render(request, 'index.html')
 
+
+@login_required(login_url='/login/')
+def post_list(request):
+    return render(request, 'list.html')
 
 
 # 'subscribe/<int:author_id>' subscription on author view

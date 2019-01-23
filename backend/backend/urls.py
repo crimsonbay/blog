@@ -17,12 +17,12 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from blog.views import AddSubscriptionView, CreatePostView, GetMyList, GetUserList,\
     MarkPost, DeleteSubscriptionView, GetAllMyList, index, UserView,\
-    SubscriptionView, NoSubscriptionView
+    SubscriptionView, NoSubscriptionView, post_list
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
-    re_path(r'^$', index, name='index'),
+    path('list/', post_list, name='list'),
     path('admin/', admin.site.urls),
     path('api/subscribe/<int:author_id>/', AddSubscriptionView.as_view()),
     path('api/unsubscribe/<int:author_id>/', DeleteSubscriptionView.as_view()),
@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/users/', UserView.as_view()),
     path('api/subscriptions/', SubscriptionView.as_view()),
     path('api/nosubscriptions/', NoSubscriptionView.as_view()),
+    re_path(r'^$', index, name='index'),
 ]
 
 urlpatterns += [

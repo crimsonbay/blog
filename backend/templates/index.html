@@ -10,6 +10,7 @@
 <script type="text/javascript">
   var xhr = new XMLHttpRequest();
   var csrftoken = getCookie('csrftoken');
+
   xhr.open('GET', 'http://localhost:8000/api/nosubscriptions/', false)
   xhr.send();
   if (xhr.status != 200) {
@@ -19,7 +20,6 @@
     var noSubscription = JSON.parse(xhr.responseText).results
     console.log(noSubscription)
     let noSubscriptionList = window.document.querySelector('#noSubscriptionList')
-    // var li = document.createElement('li')
     for (let i in noSubscription) {
       let a = document.createElement('a')
       a.title = noSubscription[i].username
@@ -39,6 +39,7 @@
       noSubscriptionList.appendChild(button)
     }
   }
+
   xhr.open('GET', 'http://localhost:8000/api/subscriptions/', false);
   xhr.send();
   if (xhr.status != 200) {
