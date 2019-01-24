@@ -1,0 +1,16 @@
+[Unit]
+Description=Normal Celery Worker
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User=www
+WorkingDirectory=/var/www/blog
+ExecStart=/var/www/blog/env/bin/python -m celery -A backend worker -E -l INFO -n worker.normal -Q normal
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
