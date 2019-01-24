@@ -17,7 +17,7 @@
     // обработать ошибку
     alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
   } else {
-    var noSubscription = JSON.parse(xhr.responseText).results
+    var noSubscription = JSON.parse(xhr.responseText)// .results
     console.log(noSubscription)
     let noSubscriptionList = window.document.querySelector('#noSubscriptionList')
     for (let i in noSubscription) {
@@ -48,7 +48,7 @@
     // обработать ошибку
     alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
   } else {
-    haveSubscription = JSON.parse(xhr.responseText).results
+    haveSubscription = JSON.parse(xhr.responseText)
     console.log(haveSubscription)
     let haveSubscriptionList = window.document.querySelector('#haveSubscriptionList')
     // var li = document.createElement('li')

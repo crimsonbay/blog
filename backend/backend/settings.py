@@ -25,12 +25,21 @@ SECRET_KEY = 'yb7jd3z_3sjeojc*bj3-72&nai93vw^_*vht)p%xe&m=fd^zbq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SITE_ADDRESS = 'http://localhost:8000'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# example email settings for gmail.com
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+EMAIL_HOST_USER = '<your_mail>@gmail.com'
+# EMAIL_HOST_PASSWORD = '<your_pass>'
+# EMAIL_USE_TLS = True
+
 LOGIN_REDIRECT_URL = '/'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20
 }
 

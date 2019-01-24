@@ -171,16 +171,19 @@ class MarkPost(APIView):
 class UserView(generics.ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserMiniSerializer
+    pagination_class = None
 
     def get_queryset(self):
         users = User.objects.all()
         return users
 
 
-# 'api/subscriptions/' return all authors user have subscribed without authenticated user
+# 'api/subscriptions/' return all authors user have subscribed
+# without authenticated user
 class SubscriptionView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserMiniSerializer
+    pagination_class = None
 
     def get_queryset(self):
         users = User.objects.filter(Q(readers__user_id=self.request.user) &
@@ -188,10 +191,12 @@ class SubscriptionView(generics.ListAPIView):
         return users
 
 
-# 'api/nosubscriptions/' return all authors user have NOT subscribed without authenticated user
+# 'api/nosubscriptions/' return all authors user have NOT subscribed
+# without authenticated user
 class NoSubscriptionView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserMiniSerializer
+    pagination_class = None
 
     def get_queryset(self):
         users = User.objects.filter(

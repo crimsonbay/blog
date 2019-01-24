@@ -17,6 +17,7 @@
     alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
   } else {
     var posts = JSON.parse(xhr.responseText).results
+    console.log(JSON.parse(xhr.responseText))
     console.log(posts)
     for (i in posts) {
       let div = document.createElement('div')
