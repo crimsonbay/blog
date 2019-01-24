@@ -8,18 +8,33 @@
   var xhr = new XMLHttpRequest()
   var csrftoken = getCookie('csrftoken')
   let mainDiv = window.document.querySelector('#main-div')
+  var page = {{ page }}
 
-  xhr.open('GET', serverAddress + '/api/feed/', false)
+  xhr.open('GET', serverAddress + '/api/feed/?page=' + page, false)
   xhr.send();
 
   if (xhr.status != 200) {
     // обработать ошибку
     alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
   } else {
+
+    var next_page = JSON.parse(xhr.responseText).next
+    var previous_page = JSON.parse(xhr.responseText).previous
+    if (next_page) {
+      let link = document.createElement('a')
+      link.innerHTML = 'следующая страница-->'
+      link.href = next_page.replace('/api', '')
+      mainDiv.appendChild(link)
+    }
+    if (previous_page) {
+      let link = document.createElement('a')
+      link.innerHTML = '<--предыдущая страница'
+      link.href = previous_page.replace('/api', '')
+      mainDiv.appendChild(link)
+    }
+
     var posts = JSON.parse(xhr.responseText).results
-    console.log(JSON.parse(xhr.responseText))
-    console.log(posts)
-    for (i in posts) {
+    for (let i in posts) {
       let div = document.createElement('div')
       let author = document.createElement('p')
       author.innerText = 'Автор: ' + posts[i].author.username + ' - ' + posts[i].created_at

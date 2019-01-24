@@ -49,6 +49,7 @@
     alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
   } else {
     haveSubscription = JSON.parse(xhr.responseText)
+    console.log(xhr.responseText)
     console.log(haveSubscription)
     let haveSubscriptionList = window.document.querySelector('#haveSubscriptionList')
     // var li = document.createElement('li')

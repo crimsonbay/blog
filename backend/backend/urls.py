@@ -16,19 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from blog.views import AddSubscriptionView, CreatePostView, GetMyList, GetUserList,\
-    MarkPost, DeleteSubscriptionView, GetAllMyList, index, UserView,\
-    SubscriptionView, NoSubscriptionView, post_list, post_list_all, AllPosts, feed,\
-    post_view, PostView, user_list, LogoutView
+    MarkPost, DeleteSubscriptionView, GetAllMyList, UserView,\
+    SubscriptionView, NoSubscriptionView, AllPosts, PostView, UserListView,\
+    PostTemplateView, LogoutView, FeedView, IndexView, PostListView,\
+    PostListAllView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('api/logout/', LogoutView.as_view()),
-    path('list/', post_list, name='list'),
-    path('list_all/', post_list_all, name='list_all'),
-    path('list/<int:user_id>/', user_list, name='user_list'),
-    path('feed/', feed, name='feed'),
-    path('post/<int:post_id>/', post_view, name='post_view'),
+    path('list/', PostListView.as_view(), name='list'),
+    path('list_all/', PostListAllView.as_view(), name='list_all'),
+    path('list/<int:user_id>/', UserListView.as_view(), name='user_list'),
+    path('feed/', FeedView.as_view(), name='feed'),
+    path('post/<int:post_id>/', PostTemplateView.as_view(), name='post_view'),
     path('api/post/<int:post_id>/', PostView.as_view()),
     path('admin/', admin.site.urls),
     path('api/subscribe/<int:author_id>/', AddSubscriptionView.as_view()),
@@ -42,7 +43,7 @@ urlpatterns = [
     path('api/users/', UserView.as_view()),
     path('api/subscriptions/', SubscriptionView.as_view()),
     path('api/nosubscriptions/', NoSubscriptionView.as_view()),
-    re_path(r'^$', index, name='index'),
+    re_path(r'^$', IndexView.as_view(), name='index'),
 ]
 
 urlpatterns += [

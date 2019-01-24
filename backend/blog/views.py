@@ -10,6 +10,10 @@ from rest_framework import status
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 from django.http import HttpResponse
 
 # Create your views here.
@@ -224,39 +228,74 @@ class PostView(APIView):
 
 
 # index page with subscriptions and nonsubscriptions
-@login_required(login_url='/login/')
-def index(request):
-    return render(request, 'index.html')
+class IndexView(LoginRequiredMixin, TemplateView):
+    permission_classes = (IsAuthenticated,)
+    template_name = 'index.html'
+    login_url = '/login/'
 
 
 # list of NOT READ posts of the user page
-@login_required(login_url='/login/')
-def post_list(request):
-    return render(request, 'list.html')
+class PostListView(LoginRequiredMixin, TemplateView):
+    permission_classes = (IsAuthenticated,)
+    template_name = 'list.html'
+    login_url = '/login/'
+
+    def get_context_data(self, **kwargs):
+        page = self.request.GET.get('page', 1)
+        context = super().get_context_data(**kwargs)
+        context['page'] = page
+        return context
+
 
 # list of ALL posts of the user page
-@login_required(login_url='/login/')
-def post_list_all(request):
-    return render(request, 'list_all.html')
+class PostListAllView(LoginRequiredMixin, TemplateView):
+    permission_classes = (IsAuthenticated,)
+    template_name = 'list_all.html'
+    login_url = '/login/'
+
+    def get_context_data(self, **kwargs):
+        page = self.request.GET.get('page', 1)
+        context = super().get_context_data(**kwargs)
+        context['page'] = page
+        return context
 
 
 # list of ALL posts of ALL users page
-def feed(request):
-    return render(request, 'feed.html')
+class FeedView(TemplateView):
+    permission_classes = (AllowAny,)
+    template_name = 'feed.html'
+
+    def get_context_data(self, **kwargs):
+        page = self.request.GET.get('page', 1)
+        context = super().get_context_data(**kwargs)
+        context['page'] = page
+        return context
 
 
 # the certain post page
-def post_view(request, *args, **kwargs):
-    post_id = kwargs['post_id']
-    context = {'post_id': post_id}
-    return render(request, 'post.html', context=context)
+class PostTemplateView(TemplateView):
+    permission_classes = (AllowAny,)
+    template_name = 'post.html'
+
+    def get_context_data(self, **kwargs):
+        post_id = kwargs['post_id']
+        print(post_id)
+        context = super().get_context_data(**kwargs)
+        context['post_id'] = post_id
+        return context
 
 
 # the list of all subscribed posts of certain user by user.id
-def user_list(request, *args, **kwargs):
-    user_id = kwargs['user_id']
-    context = {'user_id': user_id}
-    return render(request, 'user_list.html', context=context)
+class UserListView(TemplateView):
+    permission_classes = (AllowAny,)
+    template_name = 'user_list.html'
+
+    def get_context_data(self, **kwargs):
+        post_id = kwargs['user_id']
+        print(post_id)
+        context = super().get_context_data(**kwargs)
+        context['user_id'] = post_id
+        return context
 
 
 # 'api/logout/' api-call for logout user

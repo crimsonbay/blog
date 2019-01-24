@@ -2,6 +2,7 @@
 
 {% block content %}
 {% csrf_token %}
+  {{ post_id }}
   <div id="mainDiv"></div>
 <script type="text/javascript">
   var xhr = new XMLHttpRequest()
@@ -14,6 +15,7 @@
     // обработать ошибку
     alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
   } else {
+    console.log(xhr.responseText)
     post = JSON.parse(xhr.responseText)
     console.log(post)
     let div = document.createElement('div')
