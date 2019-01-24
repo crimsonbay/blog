@@ -38,7 +38,25 @@
   <input type="hidden" name="next" value="{{ next }}" />
 </div>
 </form>
-
+  {% csrf_token %}
+{% if user.is_authenticated %}
+<p>You are logged as <b>{{ user.username }}</b></p>
+<div id="mainDiv"></div>
+<script>
+  var xhr = new XMLHttpRequest()
+  let button = document.createElement('button')
+  var csrftoken = getCookie('csrftoken')
+  button.innerText = 'Logout'
+  button.onclick = function() {
+    console.log(this)
+    xhr.open('POST', serverAddress + '/api/logout/', false);
+    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhr.send();
+    window.location.reload(true)
+  }
+  mainDiv.appendChild(button)
+</script>
+{% endif %}
 {# Assumes you setup the password_reset view in your URLconf #}
 <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
 

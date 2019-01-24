@@ -1,0 +1,48 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% csrf_token %}
+  <div id="mainDiv"></div>
+<script type="text/javascript">
+  var xhr = new XMLHttpRequest()
+  var postId = {{ post_id }}
+  var csrftoken = getCookie('csrftoken')
+
+  xhr.open('GET', serverAddress + '/api/post/' + postId + '/', false)
+  xhr.send()
+  if (xhr.status != 200) {
+    // обработать ошибку
+    alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
+  } else {
+    post = JSON.parse(xhr.responseText)
+    console.log(post)
+    let div = document.createElement('div')
+    let author = document.createElement('p')
+    author.innerText = 'Автор: ' + post.author.username + ' - ' + post.created_at
+    let title = document.createElement('p')
+    title.innerHTML = '<b>' + post.title + '</b>'
+    let text = document.createElement('span')
+    text.innerText = post.text
+    let button = document.createElement('button')
+    button.setAttribute('id', post.id)
+    button.innerText = 'Прочитано'
+    button.onclick = function() {
+      console.log(this)
+      xhr.open('POST', serverAddress + '/api/mark-read/'+ this.id + '/', false);
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      xhr.send();
+      window.location.replace(serverAddress + "/list/");
+    }
+    let lineBreak = document.createElement('p')
+    let separator = document.createElement('p')
+    separator.innerText = '----------------------------------'
+    div.appendChild(author)
+    div.appendChild(title)
+    div.appendChild(text)
+    div.appendChild(lineBreak)
+    div.appendChild(button)
+    div.appendChild(separator)
+    mainDiv.appendChild(div)
+  }
+</script>
+{% endblock %}

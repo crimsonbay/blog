@@ -17,18 +17,26 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from blog.views import AddSubscriptionView, CreatePostView, GetMyList, GetUserList,\
     MarkPost, DeleteSubscriptionView, GetAllMyList, index, UserView,\
-    SubscriptionView, NoSubscriptionView, post_list
+    SubscriptionView, NoSubscriptionView, post_list, post_list_all, AllPosts, feed,\
+    post_view, PostView, user_list, LogoutView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('api/logout/', LogoutView.as_view()),
     path('list/', post_list, name='list'),
+    path('list_all/', post_list_all, name='list_all'),
+    path('list/<int:user_id>/', user_list, name='user_list'),
+    path('feed/', feed, name='feed'),
+    path('post/<int:post_id>/', post_view, name='post_view'),
+    path('api/post/<int:post_id>/', PostView.as_view()),
     path('admin/', admin.site.urls),
     path('api/subscribe/<int:author_id>/', AddSubscriptionView.as_view()),
     path('api/unsubscribe/<int:author_id>/', DeleteSubscriptionView.as_view()),
     path('api/create-post/', CreatePostView.as_view()),
     path('api/list/', GetMyList.as_view()),
-    path('api/list_all/', GetAllMyList.as_view()),
+    path('api/list-all/', GetAllMyList.as_view()),
+    path('api/feed/', AllPosts.as_view()),
     path('api/list/<int:user_id>/', GetUserList.as_view()),
     path('api/mark-read/<int:post_id>/', MarkPost.as_view()),
     path('api/users/', UserView.as_view()),
